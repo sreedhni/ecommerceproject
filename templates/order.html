@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+{% if orderd_products %}
+<div class="container" style="margin-bottom: 100px; overflow-x: auto;">
+    {% for order in orderd_products %}
+    <div class="row pt-3">
+        <div class="col-sm-5 border border-danger">
+            <center><img src="{{ order.products.image.url }}" height="150px" width="150px"></center>
+        </div>
+        <div class="col-sm-7 py-3 text-center border border-danger">
+            <h4 class="text-danger">Name: {{ order.user.email }}</h4>
+            <strong class="text-primary">productname:{{ order.products.product_name }}</strong><br>
+
+            <strong class="text-primary">Delivery Address: {{ order.address }}</strong><br>
+            <strong class="text-primary">Phone number: {{ order.phone }}</strong><br>
+            <strong class="text-primary">Quantity Ordered: {{ order.no_of_items }}</strong><br>
+            <strong class="text-primary">Subtotal: {{ order.sub_total }}</strong><br>
+            <strong class="text-primary">Ordered on: {{ order.date_added }}</strong><br>
+            <strong class="text-danger">Delivery Status: {{order.delivery_status}}</strong><br>
+            <!-- Include review form for each order -->
+            <form method="post" action="{% url 'cart:add_review' order.id %}">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit" class="btn btn-primary mt-2">Submit Review</button>
+            </form>
+            <!-- Continue Shopping link -->
+            <p class="text-center"><a href="{% url 'ecommerceapp:index' %}">Continue Shopping</a></p>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+</div>
+{% endblock %}

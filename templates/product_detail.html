@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Product Detail
+{% endblock %}
+
+{% block content %}
+<div class="container" style="margin-bottom: 100px; overflow-x: auto;">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">{{ product.product_name }}</h2>
+                    <p class="card-text"><strong>Category:</strong> {{ product.category }}</p>
+                    <p class="card-text"><strong>Brand:</strong> {{ product.brand }}</p>
+                    <p class="card-text"><strong>Price:</strong> {{ product.price }}</p>
+                    <p class="card-text"><strong>Description:</strong> {{ product.description }}</p>
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="Product Image" class="img-fluid">
+                    {% endif %}
+                    <p class="card-text"><strong>Stock:</strong> {{ product.stock }}</p>
+                    <p class="card-text"><strong>Average Rating:</strong> {{ product.average_rating|default:"No ratings yet" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

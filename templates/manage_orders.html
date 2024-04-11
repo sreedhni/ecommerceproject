@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="container"  style="overflow-x: auto;">
+    <h1 class="my-4 overflow-x: auto;">product addedd by you</h1>
+
+    <!-- Job listings -->
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">{{ order.product_name}}</h5>
+                    <center><img src="{{ order.image.url }}" height="150px" width="150px"></center>
+
+                    <p class="card-text"><strong>Description</strong> <span class="text-info">{{ order.description}}</span></p>
+                    <p class="card-text"><strong>brand:</strong> <span class="text-info">{{ order.brand}}</span></p>
+                    <p class="card-text"><strong>price:</strong> <span class="text-info">{{ order.price}}</span></p>
+                    <p class="card-text"><strong>stock:</strong> <span class="text-info">{{ order.stock}}</span></p>
+
+                    <p class="card-text"><strong>Number of Orders:</strong> <span class="text-info">{{ order.order_set.count }}</span></p>
+  <!-- Display status of job applications -->
+                    {% for application in order.order_set.all %}
+                    {% empty %}
+                        <p class="card-text">No Orders yet</p>
+                    {% endfor %}
+
+                    <a href="{% url 'ecommerceapp:all-orders' order.pk %}" class="btn btn-info">View orders</a>
+                    <a href="{% url 'ecommerceapp:product_edit' order.pk %}" class="btn btn-primary">Edit product</a>
+                    <a href="{% url 'ecommerceapp:product_delete' order.pk%}" class="btn btn-danger">delete product</a>
+
+                    <!-- Button to view applications -->
+
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <div class="col-md-12">
+                <p>No jobs found</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

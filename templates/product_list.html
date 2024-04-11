@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h3>Welcome to Shopycart</h3>
+{% endblock %}
+
+{% block body %}
+{% load static %}
+
+<section id="portfolio" class="portfolio">
+  <div class="container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <strong>{{ message }}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    
+    <div class="section-title">
+      <h2>Welcome to our ShopyCart</h2>
+      <h3>Check our <span>Products</span></h3>
+    </div>
+
+    {% for category, products in all_prods %}
+    <h2>{{ category }}</h2>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-3">
+                <div class="card h-100 d-flex flex-column">
+                    <img src="{{ product.image.url }}" class="card-img-top flex-grow-1" alt="{{ product.product_name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.product_name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <p class="card-text">Price: ${{ product.price }}</p>
+                        {% if request.user.is_customer and request.user.is_authenticated %}
+
+
+{% if i.stock <= 0 %}
+          <h2>Out of stock</h2>
+          {% else %}
+          <a href="{% url 'cart:add_cart' product.id %}" class="btn btn-danger">Add to cart</a>
+
+          {% endif %}
+
+
+{% endif %}
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
