@@ -128,7 +128,7 @@ def add_review(request, product_id):
         form = ReviewForm(request.POST)
         if form.is_valid():
             user = request.user
-            product = get_object_or_404(Product, pk=product_id)  # Assuming you have a Product model
+            product = get_object_or_404(Product, pk=product_id)  
             print(product)
             print(user)
             rating = form.cleaned_data['rating']
