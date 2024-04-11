@@ -13,8 +13,6 @@ from users.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_str
 
-# Instead of using force_text
-# Use force_str or str
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 def signup(request):
@@ -93,17 +91,17 @@ class ActivateAccountView(View):
             user = None
         
         if user is not None and generate_token.check_token(user, token):
-            if user.is_customer:  # Check if user is a customer
+            if user.is_customer:  
                 user.is_active = True
                 user.save()
                 messages.info(request, "Account activated successfully")
                 return redirect('/users/login')
-            elif user.is_seller:  # Check if user is a seller
+            elif user.is_seller:  
                 user.is_active = False
                 user.save()
                 messages.info(request, "Account activated only when the admin alllows you")
                 return redirect('/users/login')
-            elif request.user.is_superuser:  # Check if the request is made by a superuser
+            elif request.user.is_superuser: 
                 user.is_active = True
                 user.save()
                 messages.info(request, "Account activated successfully")

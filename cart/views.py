@@ -121,7 +121,7 @@ def send_order_confirmation_email(user, order):
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Review
-from .forms import ReviewForm  # Assuming you have created a ReviewForm
+from .forms import ReviewForm 
 
 def add_review(request, product_id):
     if request.method == 'POST':
@@ -152,11 +152,8 @@ def product_search(request):
     return render(request, 'product_search.html', {'products': products})
 
 def product_filter(request):
-    # Fetch filter parameters from request.GET and filter products accordingly
-    # Example:
     category = request.GET.get('category')
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
-    # Perform filtering based on category, price range, etc.
     products = Product.objects.filter(category=category, price__gte=min_price, price__lte=max_price)
     return render(request, 'product_filter.html', {'products': products})
