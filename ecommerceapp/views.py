@@ -9,6 +9,8 @@ from django.http import HttpResponseNotFound
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
 from cart.models import Order
+from django.db.models import Q
+
 
 def index(request):
     allProds = []
@@ -38,7 +40,7 @@ def about(request):
     return render(request,"about.html")
 
 
-
+@login_required
 def add_category(request):
     if request.method == 'POST':
         category_name = request.POST.get('category')
@@ -46,6 +48,8 @@ def add_category(request):
             Category.objects.create(category=category_name)
             return redirect('ecommerceapp:category_list')  
     return render(request, 'add_category.html') 
+
+@login_required
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'category_list.html', {'categories': categories})
@@ -76,6 +80,7 @@ def add_product(request):
         context = {'form': form}
         return render(request, 'add_product.html', context)
 
+@login_required
 def edit_product(request, pk):
     item = get_object_or_404(Product, pk=pk)
     if item.created_by != request.user:
@@ -106,7 +111,7 @@ def manage_orders(request):
 
 
 
-
+@login_required
 def change_applicant_status(request, order_id, new_status):
     try:
         order = Order.objects.get(pk=order_id)
@@ -120,14 +125,14 @@ def change_applicant_status(request, order_id, new_status):
 
 
 
-
+@login_required
 def product_detail(request, product_id):
     product = get_object_or_404(Product,pk=product_id)
     return render(request, 'product_detail.html', {'product': product})
 
 
 
-
+@login_required
 def all_customers(request, pk):
     try:
         products = Product.objects.get(pk=pk)
@@ -142,9 +147,6 @@ def all_customers(request, pk):
 
 
 
-from django.shortcuts import render
-from django.db.models import Q
-from .models import Product, Category
 
 def product_list(request):
     all_prods = []
@@ -195,6 +197,8 @@ class ProductDeleteView(DeleteView):
     model = Product
     success_url = reverse_lazy('ecommerceapp:index')  # Redirect to product list after deletion
     template_name = 'product_confirm_delete.html'  # Template for confirmation page
+
+
 
 def orders_pro(request):
     if request.user.is_authenticated and request.user.is_customer:

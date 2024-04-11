@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from .models import Product
-INPUT_CLASS = 'form-control'  # Replace 'form-control' with your actual CSS class
+INPUT_CLASS = 'form-control'  
 
 class ProductForm(forms.ModelForm):
     class Meta:

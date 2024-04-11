@@ -77,9 +77,6 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
 @login_required
-
-@login_required
-
 def orderform(request):
     if request.method == "POST":
         a = request.POST.get('a', '')  # Shipping address
@@ -123,24 +120,32 @@ from django.contrib import messages
 from .models import Review
 from .forms import ReviewForm 
 
+
+@login_required
 def add_review(request, product_id):
+    product = Product.objects.get(pk=product_id)  # Retrieve the product using the Product model
+
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            user = request.user
-            product = get_object_or_404(Product, pk=product_id)  
-            print(product)
-            print(user)
-            rating = form.cleaned_data['rating']
-            comment = form.cleaned_data['comment']
-            review = Review(user=user, product=product, rating=rating, comment=comment)
-            review.save()
+            rating = form.save(commit=False)
+            rating.product = product  # Assign the product directly
+            rating.user = request.user  
+            rating.save()
             messages.success(request, 'Your review has been added successfully.')
             return redirect('ecommerceapp:index')
+
     else:
         form = ReviewForm()
     
-    return render(request, 'add_review.html', {'form': form})
+    context = {
+        'form': form,
+        'product': product
+    }
+
+    return render(request, 'add_review.html', context)
+
+
 
 
 def product_search(request):
