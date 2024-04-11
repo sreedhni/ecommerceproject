@@ -170,7 +170,7 @@ def product_list(request):
         products_with_categories = products_with_categories.filter(price__lte=max_price)
 
     for product in products_with_categories:
-        category_name = product.category.category  # Access the category name through the related object
+        category_name = product.category.category  
         found = False
         for category, prods in all_prods:
             if category == category_name:
@@ -180,7 +180,7 @@ def product_list(request):
         if not found:
             all_prods.append((category_name, [product]))
 
-    categories = Category.objects.all()  # Retrieve all categories for filtering
+    categories = Category.objects.all()  
 
     return render(request, "product_list.html", {
         'all_prods': all_prods,

@@ -44,17 +44,10 @@ class Order(models.Model):
     
 from django.core.validators import MinValueValidator,MaxValueValidator
 
-# class Reviews(models.Model):
-#     user=models.ForeignKey(User,on_delete=models.CASCADE)
-#     product=models.ForeignKey(Order,null=True,on_delete=models.SET_NULL)
-#     rating=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
-#     comment=models.CharField(max_length=300)
-#     def __str__(self):
-#         return f"Review by {self.user.username} for {self.order.products.name}"
     
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)  # Reference Product model
+    product = models.ForeignKey(Product, on_delete=models.CASCADE) 
     rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment = models.CharField(max_length=300)
 
