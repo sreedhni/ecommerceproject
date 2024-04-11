@@ -1,36 +1,43 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
-from .forms import RegisterForm
 from .models import OtpToken
 from django.contrib import messages
 from users.models import User
 from django.utils import timezone
 from django.core.mail import send_mail
-from django.contrib.auth import authenticate, login, logout
 
 
 def verify_email(request, email):
     user = User.objects.get(username=email)
     user_otp = OtpToken.objects.filter(user=user).last()
     
-    
     if request.method == 'POST':
         if user_otp.otp_code == request.POST['otp_code']:
             if user_otp.otp_expires_at > timezone.now():
-                user.is_active=True
-                user.save()
-                messages.success(request, "Account activated successfully!! You can Login.")
-                return redirect("/users/login")
+                if user.is_customer:
+                    user.is_active = True
+                    user.save()
+                    messages.success(request, "Account activated successfully!! You can Login.")
+                    return redirect("/users/login")
+                elif user.is_seller:
+                    user.is_active = False
+                    user.save()
+                    messages.info(request, "Account activated only when the admin allows you")
+                    return redirect("/users/login")
+                elif request.user.is_superuser: 
+                    user.is_active = True
+                    user.save()
+                    messages.success(request, "Account activated successfully")
+                    return redirect('/users/login')
             else:
                 messages.warning(request, "The OTP has expired, get a new OTP!")
-                return redirect("otp:verify-email",email=user.email)
+                return redirect("otp:verify-email", email=user.email)
         else:
             messages.warning(request, "Invalid OTP entered, enter a valid OTP!")
             return redirect("otp:verify-email", email=user.email)
         
     context = {}
     return render(request, "verify_token.html", context)
-
 
 
 

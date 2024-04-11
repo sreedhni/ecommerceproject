@@ -13,7 +13,7 @@
 
 {% endfor %}
 
-<h3 class="text-dark">Login</h3>
+<h3 class="text-dark ">Login</h3>
 
 <form action='/users/login/' method="post">
   {% csrf_token %}
@@ -47,11 +47,13 @@
 
   <br />
 
-  <button type="submit" class="btn">Login</button>
+  <button type="submit" class="btn btn-danger">Login</button>
 
   <br />
 </form>
 NEw user <a href="/users/signup/">signup here</a>
+reset password <a href="/users/request-reset-email/">reset password</a>
+
 
 <br />
 </div>

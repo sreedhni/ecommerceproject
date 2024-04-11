@@ -126,7 +126,6 @@ class RequestResetEmailView(View):
         user=User.objects.filter(email=email)
         if user.exists():
 
-            current_site=get_current_site(request)
 
             email_subject='[Reset Your Password]'
 
