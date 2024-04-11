@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'cart',
     'crispy_forms',
+    'otp'
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'  # or 'bootstrap5', 'uni-form', etc.
 

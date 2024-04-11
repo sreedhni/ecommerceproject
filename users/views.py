@@ -26,27 +26,16 @@ def signup(request):
         try:
             if User.objects.get(username=email):
                 messages.info(request, "email is taken")
-                return render(request, 'register_seller.html')
+                return render(request, 'signup.html')
         except Exception as identifier:
             pass
         user = User.objects.create_user(email, email, password)
         user.is_active = False
         user.is_customer = True
         user.save()
-        email_subject = "Activate Your Account"
-        message = render_to_string('activate2.html', {
-            'user': user,
-            'domain': '127.0.0.1:8000',
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': generate_token.make_token(user)
-        })
-
-        email_message = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [email])
-        email_message.send()
-        messages.success(request, "Activate your account by clicking the link in your gmail ")
-        return redirect("/users/login/")
+        messages.success(request, "Account created successfully! An OTP was sent to your Email")
+        return redirect("otp:verify-email",email=user.email)
     return render(request, "register_seller.html")
-
 
 def signupseller(request):
     if request.method == "POST":
@@ -66,18 +55,9 @@ def signupseller(request):
         user.is_active = False
         user.is_seller = True
         user.save()
-        email_subject = "Activate Your Account"
-        message = render_to_string('activate.html', {
-            'user': user,
-            'domain': '127.0.0.1:8000',
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': generate_token.make_token(user)
-        })
 
-        email_message = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [email])
-        email_message.send()
         messages.success(request, "Activate your account by clicking the link in your gmail ")
-        return redirect("/users/login/")
+        return redirect("otp:verify-email",email=user.email)
     return render(request, "register_seller.html")
 
 
