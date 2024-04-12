@@ -1,7 +1,7 @@
 from django.db import models
-from django.db import models
 from ecommerceapp.models import Product
 from users.models import User
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 # Create your models here.
 class Cart(models.Model):
@@ -42,7 +42,6 @@ class Order(models.Model):
     def sub_total(self):
         return self.no_of_items*self.products.price
     
-from django.core.validators import MinValueValidator,MaxValueValidator
 
     
 class Review(models.Model):
@@ -50,6 +49,6 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE) 
     rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment = models.CharField(max_length=300)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE,null=True)
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
     def __str__(self):
-        return f"Review by {self.user.username} for {self.product.name}"
+        return f"Review by {self.user.username} for {self.product.product_name}"

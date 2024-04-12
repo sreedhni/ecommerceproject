@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}All Reviews for {{ product.product_name }}{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid" style="margin-bottom: 100px; overflow-x: auto;">
+    <h1>All Reviews for {{ product.product_name }}</h1>
+
+    <ul>
+        {% for review in reviews %}
+        <li style="color: red; background-color: lightblue;">{{ review.comment }} ----------- {{ review.user }}</li>        {% endfor %}
+    </ul>
+
+
+
+</div>
+
+
+
+
+{% endblock %}

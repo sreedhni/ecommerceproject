@@ -26,13 +26,7 @@
       <!-- Search input -->
       <input type="text" name="q" placeholder="Search products" value="{{ search_query }}">
       <!-- Category filter -->
-      <select name="category">
-          <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
-          {% for category in categories %}
-              <option value="{{ category.category }}" {% if selected_category == category.category %}selected{% endif %}>{{ category.category }}</option>
-          {% endfor %}
-      </select>
-      <!-- Price range filters -->
+          <!-- Price range filters -->
       <input type="number" name="min_price" placeholder="Min Price" value="{{ min_price }}">
       <input type="number" name="max_price" placeholder="Max Price" value="{{ max_price }}">
       <button type="submit">Apply Filters</button>
@@ -64,6 +58,8 @@
 
             <p>Average Rating: {{ i.average_rating }}</p>
             <p>seller:{{i.created_by}} </p>
+            <p>          <a href="{% url 'cart:display_all_review' i.id %}" class="btn btn-danger">review</a>
+            </p>
 {% if request.user.is_customer and request.user.is_authenticated %}
 
 

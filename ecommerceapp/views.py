@@ -39,7 +39,6 @@ def contact(request):
 def about(request):
     return render(request,"about.html")
 
-
 @login_required
 def add_category(request):
     if request.method == 'POST':

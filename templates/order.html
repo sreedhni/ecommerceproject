@@ -20,7 +20,7 @@
             <strong class="text-primary">Ordered on: {{ order.date_added }}</strong><br>
             <strong class="text-danger">Delivery Status: {{order.delivery_status}}</strong><br>
             <!-- Include review form for each order -->
-            <form method="post" action="{% url 'cart:add_review' order.id %}">
+            <form method="post" action="{% url 'cart:add_review' order.products.id %}">
               {% csrf_token %}
               {{ form.as_p }}
               <button type="submit" class="btn btn-primary mt-2">Submit Review</button>

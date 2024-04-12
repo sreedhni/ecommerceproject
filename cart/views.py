@@ -1,10 +1,16 @@
-from django.shortcuts import render
 from django.http import HttpResponseNotFound,HttpResponseBadRequest
 from django.shortcuts import render,redirect
 from ecommerceapp.models import Product
 from .models import Cart,Order
 from django.contrib.auth.decorators import login_required
-from users.models import User
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import ReviewForm 
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.shortcuts import render, get_object_or_404
+from .models import Review, Product
+
 
 # Create your views here.
 @login_required
@@ -72,15 +78,12 @@ def cart_remove(request, id):
         pass
     return redirect('cart:cartview')
 
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 
 @login_required
 def orderform(request):
     if request.method == "POST":
-        a = request.POST.get('a', '')  # Shipping address
-        p = request.POST.get('p', '')  # Phone number
+        a = request.POST.get('a', '')  
+        p = request.POST.get('p', '')  
         pay=request.POST.get('pay','')
         if not a or not p or not pay:
             return HttpResponseBadRequest("Shipping address and phone number are required.")
@@ -108,44 +111,25 @@ def send_order_confirmation_email(user, order):
     subject = 'Order Confirmation'
     html_message = render_to_string('order_confirmation_email.html', {'user': user, 'order': order})
     plain_message = strip_tags(html_message)
-    from_email = 'your@example.com'  # Change this to your email
+    from_email = 'your@example.com'  
     to_email = user.email
     send_mail(subject, plain_message, from_email, [to_email], html_message=html_message)
 
 
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from .models import Review
-from .forms import ReviewForm 
-
-
 @login_required
-def add_review(request, product_id):
-    product = Product.objects.get(pk=product_id)  # Retrieve the product using the Product model
-
+def add_review(request, order_id):
+    product = get_object_or_404(Product, id=order_id)    
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            rating = form.save(commit=False)
-            rating.product = product  # Assign the product directly
-            rating.user = request.user  
-            rating.save()
-            messages.success(request, 'Your review has been added successfully.')
-            return redirect('ecommerceapp:index')
-
+            review = form.save(commit=False)
+            review.user = request.user
+            review.product = product
+            review.save()
+            return redirect('ecommerceapp:product_detail', product_id=review.product.id)  
     else:
         form = ReviewForm()
-    
-    context = {
-        'form': form,
-        'product': product
-    }
-
-    return render(request, 'add_review.html', context)
-
-
+    return render(request, 'add_review.html', {'form': form})
 
 
 def product_search(request):
@@ -162,3 +146,10 @@ def product_filter(request):
     max_price = request.GET.get('max_price')
     products = Product.objects.filter(category=category, price__gte=min_price, price__lte=max_price)
     return render(request, 'product_filter.html', {'products': products})
+
+
+def display_all_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    reviews = Review.objects.filter(product=product)
+    return render(request, 'all_review.html', {'product': product, 'reviews': reviews})
+    

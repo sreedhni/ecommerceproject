@@ -12,9 +12,8 @@ from django.contrib.auth import login,authenticate,logout
 from users.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_str
-
-
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
 def signup(request):
     if request.method == "POST":
         email = request.POST['email']
@@ -62,36 +61,6 @@ def signupseller(request):
 
 
 
-class ActivateAccountView(View):
-    def get(self, request, uidb64, token):
-        try:
-            uid = force_str(urlsafe_base64_decode(uidb64))
-            user = User.objects.get(pk=uid)
-        except Exception:
-            user = None
-        
-        if user is not None and generate_token.check_token(user, token):
-            if user.is_customer:  
-                user.is_active = True
-                user.save()
-                messages.info(request, "Account activated successfully")
-                return redirect('/users/login')
-            elif user.is_seller:  
-                user.is_active = False
-                user.save()
-                messages.info(request, "Account activated only when the admin alllows you")
-                return redirect('/users/login')
-            elif request.user.is_superuser: 
-                user.is_active = True
-                user.save()
-                messages.info(request, "Account activated successfully")
-                return redirect('/users/login')
-            else:
-                messages.error(request, "Activation failed. Insufficient permissions.")
-                return render(request, 'activatefail.html')
-        else:
-            messages.error(request, "Activation failed. Invalid token.")
-            return render(request, 'activatefail.html')
 
 def handlelogin(request):
     if request.method=="POST":
@@ -107,9 +76,6 @@ def handlelogin(request):
             return redirect('/users/login')
         
     return render(request, 'login.html')
-
-
-
 
 
 def handlelogout(request):
