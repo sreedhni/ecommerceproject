@@ -29,18 +29,21 @@
                     <td>Total: {{ item.sub_total }}</td>
 
                     <td>
+                        {% if item.products.stock > item.quantity %}
                         <a href="{% url 'cart:add_cart' item.products.id %}">
-                            <i class="fa-solid fa-circle-plus"></i> addd
+                            <i class="fa-solid fa-circle-plus"></i> 
                         </a><br>
-                        <a href="{% url 'cart:item_less' item.products.id %}">
-                            <i class="fa-sharp fa-solid fa-circle-minus"></i>minus
-                        </a><br>
-                        <a href="{% url 'cart:cart_remove' item.products.id %}">
-                            <i class="fa-solid fa-trash"></i>Remove
-                        </a>
-
-  
-                    </td>
+                    {% else %}
+                        <p>Stock is over</p>
+                    {% endif %}
+                    
+                    <a href="{% url 'cart:item_less' item.products.id %}">
+                        <i class="fa-sharp fa-solid fa-circle-minus"></i>
+                    </a><br>
+                    <a href="{% url 'cart:cart_remove' item.products.id %}">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                                        </td>
 
 
 

@@ -4,13 +4,28 @@
 
 {% block content %}
 
+
+
+
+
+
+
+
 <div class="container-fluid" style="margin-bottom: 100px; overflow-x: auto;">
     <h1>All Reviews for {{ product.product_name }}</h1>
+    {% if reviews %}
 
     <ul>
+
         {% for review in reviews %}
-        <li style="color: red; background-color: lightblue;">{{ review.comment }} ----------- {{ review.user }}</li>        {% endfor %}
+        <li style="color: red; background-color: lightblue;">{{ review.comment }} ----------- {{ review.user }}</li>      
+          {% endfor %}
     </ul>
+
+    {% else %}
+    <p>No reviews for this product yet.</p>
+{% endif %}
+
 
 
 

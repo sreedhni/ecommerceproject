@@ -10,88 +10,100 @@
 
 <section id="portfolio" class="portfolio">
   <div class="container">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-      <strong>{{ message }}</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-    <div class="section-title">
-      <h2>Welcome to our ShopyCart!!!!!!!!!!!!</h2>
-      <h3>Check our <span>Products</span></h3>
-    </div>
-
-
-    <form method="GET" action="{% url 'ecommerceapp:product_list' %}">
-      <!-- Search input -->
-      <input type="text" name="q" placeholder="Search products" value="{{ search_query }}">
-      <!-- Category filter -->
-          <!-- Price range filters -->
-      <input type="number" name="min_price" placeholder="Min Price" value="{{ min_price }}">
-      <input type="number" name="max_price" placeholder="Max Price" value="{{ max_price }}">
-      <button type="submit">Apply Filters</button>
-  </form>
-
-    {% for product, range, nSlides in allProds %}
-    <h3 class="my-3 text-center text-success bg-light">{{ product.0.category }} Flashsale</h3>
-    <div class="container">
-      <div class="row">
-        {% for i in product %}
-        <div class="col-md-3 mt-3">
-          <img src='/media/{{ i.image }}' class="card-img-top" alt="..." style="width: 100%; height: 200px;">
-          <div class="card-body">
-            <h5 class="card-title mt-2" id="name{{ i.id }}">{{ i.product_name }}</h5>
-  
-            <p class="card-text">{{ i.description|slice:"0:53" }}...</p>
-            <h6 class="card-title mb-3">Price: <span id="price{{ i.id }}">{{ i.price }}</span></h6>
-
-
-            <p class="card-text">
-              <small class="text-body-secondary">
-                  {% if i.stock <= 0 %}
-                      STOCK: 0
-                  {% else %}
-                      STOCK: {{ i.stock }}
-                  {% endif %}
-              </small>
-          </p>
-
-            <p>Average Rating: {{ i.average_rating }}</p>
-            <p>seller:{{i.created_by}} </p>
-            <p>          <a href="{% url 'cart:display_all_review' i.id %}" class="btn btn-danger">review</a>
-            </p>
-{% if request.user.is_customer and request.user.is_authenticated %}
-
-
-{% if i.stock <= 0 %}
-          <h2>Out of stock</h2>
-          {% else %}
-          <a href="{% url 'cart:add_cart' i.id %}" class="btn btn-danger">Add to cart</a>
-
-          {% endif %}
-
-
-{% endif %}
-
-{% if request.user == i.created_by %}
-    <button><a href="{% url 'ecommerceapp:product_edit' pk=i.id %}">Edit</a></button>
-    <button><a href="{% url 'ecommerceapp:product_delete' pk=i.id %}">Delete</a></button>
-    <button><a href="{% url 'ecommerceapp:product_detail' product_id=i.id %}">Details</a></button>
-{% endif %}
-
-
-
-
-
-            <a href="/media/{{i.image}}">
-              <button class="btn btn-dark btn-sm cart"> View</button>
-            </a>
-          </div>
-        </div>
-        {% endfor %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <strong>{{ message }}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    </div>
-    {% endfor %}
+      {% endfor %}
+      <div class="section-title">
+          <h2>Welcome to our ShopyCart!!!!!!!!!!!!</h2>
+          <h3>Check our <span>Products</span></h3>
+      </div>
+
+      <form method="GET" action="{% url 'ecommerceapp:product_list' %}">
+          <input type="text" id="product_name" name="q" placeholder="Search products" value="{{ search_query }}">
+          <input type="number" id="min_price" name="min_price" placeholder="Min Price" value="{{ min_price }}">
+          <input type="number" id="max_price" name="max_price" placeholder="Max Price" value="{{ max_price }}">
+          <button type="button" onclick="applyFilters()">Apply Filters</button>
+      </form>
+
+      <script>
+          function applyFilters() {
+              var productNameInput = document.getElementById('product_name');
+              var minPriceInput = document.getElementById('min_price');
+              var maxPriceInput = document.getElementById('max_price');
+
+              var productName = productNameInput.value;
+              var minPrice = parseFloat(minPriceInput.value);
+              var maxPrice = parseFloat(maxPriceInput.value);
+
+              if (minPrice >= maxPrice) {
+                  alert("Minimum price should be less than maximum price!");
+                  return;
+              }
+
+              // Submit the form
+              document.forms[0].submit();
+          }
+      </script>
+
+      {% if allProds %}
+      {% for product, range, nSlides in allProds %}
+      <h3 class="my-3 text-center text-success bg-light">{{ product.0.category }} Flashsale</h3>
+      <div class="container">
+          <div class="row">
+              {% for i in product %}
+              <div class="col-md-3 mt-3">
+                  <img src='/media/{{ i.image }}' class="card-img-top" alt="..." style="width: 100%; height: 200px;">
+                  <div class="card-body">
+                      <h5 class="card-title mt-2" id="name{{ i.id }}">{{ i.product_name }}</h5>
+
+                      <p class="card-text">{{ i.description|slice:"0:53" }}...</p>
+                      <h6 class="card-title mb-3">Price: <span id="price{{ i.id }}">{{ i.price }}</span></h6>
+
+                      <p class="card-text">
+                          <small class="text-body-secondary">
+                              {% if i.stock <= 0 %}
+                                  STOCK: 0
+                              {% else %}
+                                  STOCK: {{ i.stock }}
+                              {% endif %}
+                          </small>
+                      </p>
+
+                      <p>Average Rating: {{ i.average_rating }}</p>
+                      <p>seller:{{i.created_by}} </p>
+                      <p> <a href="{% url 'cart:display_all_review' i.id %}" class="btn btn-danger">review</a></p>
+
+                      {% if request.user.is_customer and request.user.is_authenticated %}
+                      {% if i.stock <= 0 %}
+                      <h2>Out of stock</h2>
+                      {% else %}
+                      <a href="{% url 'cart:add_cart' i.id %}" class="btn btn-danger">Add to cart</a>
+                      {% endif %}
+                      {% endif %}
+
+                      {% if request.user == i.created_by %}
+                      <button><a href="{% url 'ecommerceapp:product_edit' pk=i.id %}">Edit</a></button>
+                      <button><a href="{% url 'ecommerceapp:product_delete' pk=i.id %}">Delete</a></button>
+                      <button><a href="{% url 'ecommerceapp:product_detail' product_id=i.id %}">Details</a></button>
+                      {% endif %}
+      
+                      <a href="/media/{{i.image}}">
+                          <button class="btn btn-dark btn-sm cart"> View</button>
+                      </a>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="alert alert-info" role="alert">
+          No matching products found.
+      </div>
+      {% endif %}
   </div>
 </section>
 
